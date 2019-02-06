@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?><process version="9.1.000">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="9.1.000" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="true" class="retrieve" compatibility="9.1.000" expanded="true" height="68" name="Retrieve" width="90" x="45" y="136">
+        <parameter key="repository_entry" value="//Cloud Repository/Assignment 1/Assignment+1-Hollywood+Homes"/>
+      </operator>
+      <operator activated="true" class="filter_examples" compatibility="9.1.000" expanded="true" height="103" name="Filter Examples (2)" width="90" x="179" y="136">
+        <parameter key="parameter_expression" value=""/>
+        <parameter key="condition_class" value="custom_filters"/>
+        <parameter key="invert_filter" value="false"/>
+        <list key="filters_list">
+          <parameter key="filters_entry_key" value="Bathrooms.gt.0"/>
+        </list>
+        <parameter key="filters_logic_and" value="true"/>
+        <parameter key="filters_check_metadata" value="true"/>
+      </operator>
+      <operator activated="true" class="nominal_to_numerical" compatibility="9.1.000" expanded="true" height="103" name="Nominal to Numerical" width="90" x="313" y="136">
+        <parameter key="return_preprocessing_model" value="false"/>
+        <parameter key="create_view" value="false"/>
+        <parameter key="attribute_filter_type" value="all"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value="Foreclosed|Location"/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="nominal"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="file_path"/>
+        <parameter key="block_type" value="single_value"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="single_value"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <parameter key="coding_type" value="dummy coding"/>
+        <parameter key="use_comparison_groups" value="true"/>
+        <list key="comparison_groups">
+          <parameter key="Foreclosed" value="No"/>
+          <parameter key="Location" value="Harbor Islands"/>
+        </list>
+        <parameter key="unexpected_value_handling" value="all 0 and warning"/>
+        <parameter key="use_underscore_in_name" value="false"/>
+      </operator>
+      <operator activated="true" class="normalize" compatibility="9.1.000" expanded="true" height="103" name="Normalize" width="90" x="447" y="136">
+        <parameter key="return_preprocessing_model" value="false"/>
+        <parameter key="create_view" value="false"/>
+        <parameter key="attribute_filter_type" value="subset"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value="|Age|Asking Price ($000)|Bathrooms|Days on Market|Bedrooms|Selling Price ($000)|Square Feet"/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="numeric"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="real"/>
+        <parameter key="block_type" value="value_series"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_series_end"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <parameter key="method" value="Z-transformation"/>
+        <parameter key="min" value="0.0"/>
+        <parameter key="max" value="1.0"/>
+        <parameter key="allow_negative_values" value="false"/>
+      </operator>
+      <operator activated="true" class="denormalize" compatibility="9.1.000" expanded="true" height="82" name="De-Normalize" width="90" x="581" y="340">
+        <parameter key="missing_attribute_handling" value="proceed on missing"/>
+      </operator>
+      <operator activated="true" class="detect_outlier_distances" compatibility="9.1.000" expanded="true" height="82" name="Detect Outlier (Distances)" width="90" x="581" y="136">
+        <parameter key="number_of_neighbors" value="10"/>
+        <parameter key="number_of_outliers" value="2"/>
+        <parameter key="distance_function" value="euclidian distance"/>
+      </operator>
+      <operator activated="true" class="filter_examples" compatibility="9.1.000" expanded="true" height="103" name="Filter Examples" width="90" x="715" y="136">
+        <parameter key="parameter_expression" value=""/>
+        <parameter key="condition_class" value="custom_filters"/>
+        <parameter key="invert_filter" value="false"/>
+        <list key="filters_list">
+          <parameter key="filters_entry_key" value="outlier.equals.false"/>
+        </list>
+        <parameter key="filters_logic_and" value="true"/>
+        <parameter key="filters_check_metadata" value="true"/>
+      </operator>
+      <operator activated="true" class="impute_missing_values" compatibility="9.1.000" expanded="true" height="68" name="Impute Missing Values" width="90" x="849" y="136">
+        <parameter key="attribute_filter_type" value="all"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value=""/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="attribute_value"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="time"/>
+        <parameter key="block_type" value="attribute_block"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_matrix_row_start"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <parameter key="iterate" value="true"/>
+        <parameter key="learn_on_complete_cases" value="true"/>
+        <parameter key="order" value="chronological"/>
+        <parameter key="sort" value="ascending"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+        <process expanded="true">
+          <operator activated="true" class="linear_regression" compatibility="9.1.000" expanded="true" height="103" name="Linear Regression" width="90" x="179" y="34">
+            <parameter key="feature_selection" value="M5 prime"/>
+            <parameter key="alpha" value="0.05"/>
+            <parameter key="max_iterations" value="10"/>
+            <parameter key="forward_alpha" value="0.05"/>
+            <parameter key="backward_alpha" value="0.05"/>
+            <parameter key="eliminate_colinear_features" value="true"/>
+            <parameter key="min_tolerance" value="0.05"/>
+            <parameter key="use_bias" value="true"/>
+            <parameter key="ridge" value="1.0E-8"/>
+          </operator>
+          <connect from_port="example set source" to_op="Linear Regression" to_port="training set"/>
+          <connect from_op="Linear Regression" from_port="model" to_port="model sink"/>
+          <portSpacing port="source_example set source" spacing="0"/>
+          <portSpacing port="sink_model sink" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="apply_model" compatibility="9.1.000" expanded="true" height="82" name="Apply Model" width="90" x="782" y="340">
+        <list key="application_parameters"/>
+        <parameter key="create_view" value="false"/>
+      </operator>
+      <connect from_op="Retrieve" from_port="output" to_op="Filter Examples (2)" to_port="example set input"/>
+      <connect from_op="Filter Examples (2)" from_port="example set output" to_op="Nominal to Numerical" to_port="example set input"/>
+      <connect from_op="Nominal to Numerical" from_port="example set output" to_op="Normalize" to_port="example set input"/>
+      <connect from_op="Normalize" from_port="example set output" to_op="Detect Outlier (Distances)" to_port="example set input"/>
+      <connect from_op="Normalize" from_port="preprocessing model" to_op="De-Normalize" to_port="model input"/>
+      <connect from_op="De-Normalize" from_port="model output" to_op="Apply Model" to_port="model"/>
+      <connect from_op="Detect Outlier (Distances)" from_port="example set output" to_op="Filter Examples" to_port="example set input"/>
+      <connect from_op="Filter Examples" from_port="example set output" to_op="Impute Missing Values" to_port="example set in"/>
+      <connect from_op="Impute Missing Values" from_port="example set out" to_op="Apply Model" to_port="unlabelled data"/>
+      <connect from_op="Apply Model" from_port="labelled data" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+      <description align="center" color="yellow" colored="false" height="55" resized="true" width="90" x="179" y="81">Removes Row #4</description>
+      <description align="center" color="yellow" colored="false" height="52" resized="true" width="158" x="13" y="82">Loads &amp;quot;Assignment+1-&lt;br/&gt;Hollywood+Homes.CSV</description>
+      <description align="center" color="yellow" colored="false" height="73" resized="true" width="131" x="291" y="65">Convert categorical data to numeric (range 0 to 1)</description>
+      <description align="center" color="yellow" colored="false" height="67" resized="true" width="96" x="442" y="63">Normalize data for future model</description>
+      <description align="center" color="yellow" colored="false" height="57" resized="true" width="107" x="568" y="71">Labels two outliers</description>
+      <description align="center" color="yellow" colored="false" height="53" resized="true" width="113" x="701" y="76">Removes those outliers</description>
+      <description align="center" color="yellow" colored="false" height="75" resized="true" width="177" x="826" y="60">Immutes missing Selling Price values by basic linear regression model</description>
+      <description align="center" color="yellow" colored="false" height="67" resized="true" width="143" x="560" y="270">Scales the data back to meaningful numbers</description>
+      <description align="center" color="yellow" colored="false" height="93" resized="true" width="172" x="849" y="271">Used as a connector to get De-Normalized values after running the methods above</description>
+    </process>
+  </operator>
+</process>
